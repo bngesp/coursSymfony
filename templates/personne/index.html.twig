@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Personne{% endblock %}
+
+{% block body %}
+    <div class="mt-2">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <table id="table" class="table">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prenom</th>
+                <th scope="col">Age</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in persons %}
+                <tr>
+                    <th scope="row">1</th>
+                    <td>{{ p.nom }}</td>
+                    <td>{{ p.prenom }}</td>
+                    <td>{{ p.age }}</td>
+                    <td>a1</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url('app_add_personne') }}" class="btn btn-lg btn-primary text-center"> ajouter personne</a>
+{% endblock %}
