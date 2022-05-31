@@ -3,9 +3,5 @@
 {% block title %}Personne{% endblock %}
 
 {% block body %}
-    nom : {{ p.nom }}
-    prenom : {{ p.prenom }}
-    id : {{ p.id }}
-    age : {{ p.age }}
-    sexe : {{ p.sexe }}
+    {{ dump(person) }}
 {% endblock %}

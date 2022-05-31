@@ -8,6 +8,9 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
+// where id = 1 and nom = modou  => array("id"=> 1, "nom" => "modou")
+// order by id asc, prenom desc => array("id" => "ASC", "prenom" => "DESC")
+
 /**
  * @method Personne|null find($id, $lockMode = null, $lockVersion = null)
  * @method Personne|null findOneBy(array $criteria, array $orderBy = null)
@@ -43,6 +46,45 @@ class PersonneRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+// Select * from personne p where p.nom = ? and p.prenom = ? limit 1
+
+    public function getOneByNomAndPrenom(string $nom, string $prenom){
+        $myquery = $this->createQueryBuilder('p');
+        $myquery
+            ->where("p.nom = :name") // name => une clé
+            ->setParameter("name", $nom)
+            ->andWhere("p.prenom = :prenom")
+            ->setParameter("prenom", $prenom);
+        $query = $myquery->getQuery();
+        return $query->setMaxResults(1)->getOneOrNullResult();
+    }
+
+    public function getOneByNomAndPrenomDQL(string $nom, string $prenom){
+        $em = $this->getEntityManager();
+        $myQuery = $em->createQuery(
+            'SELECT p FROM App\Entity\Personne p WHERE p.nom = :nom and p.prenom = :prenom'
+        )->setParameter('nom', $nom)
+         ->setParameter('prenom', $prenom);
+        return $myQuery->setMaxResults(1)->getOneOrNullResult();
+    }
+
+    public function getOnlyNames(){
+        $em = $this->getEntityManager();
+        $myQuery = $em->createQuery('SELECT p.nom from App\Entity\Personne p');
+        return $myQuery->getArrayResult();
+    }
+
+
+    public function getPersonsGreatThan(int $age){
+        // Select * from personnes as p where p.age > $age
+        $myQuery = $this->createQueryBuilder('p');
+        $myQuery
+            ->where('p.age > :age')
+            ->setParameter('age', $age);
+        // getResult => fetch
+        // getArrayResult => FetchAll
+        return $myQuery->getQuery()->getArrayResult();
     }
 
     // /**

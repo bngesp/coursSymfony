@@ -75,16 +75,58 @@ class ViewController extends AbstractController
             [ "p" => $p]
         );
     }
-    #[Route('/search/{name}/{prenom}', name: 'app_search_person')]
-    public function getOneByNamePerson( string $name, string $prenom, PersonneRepository $personneRepository): Response
+    #[Route('/personne/search/{name}/{prenom}', name: 'app_search_person')]
+    public function getOneByNamePerson(string $name, string $prenom, PersonneRepository $personneRepository): Response
     {
-        $p = $personneRepository->findBy(
-            ['nom'=> $name, 'prenom' => $prenom]
-        );
+        $p = $personneRepository->getOneByNomAndPrenom($name, $prenom);
         return $this->render(
             'person/view.personnes.html.twig',
             [ "person" => $p]
         );
     }
+
+    #[Route('/personne/search/dql/{name}/{prenom}', name: 'app_search_dsl_person')]
+    public function getOneByNamePersonDQL(string $name, string $prenom, PersonneRepository $personneRepository): Response
+    {
+        $p = $personneRepository->getOneByNomAndPrenomDQL($name, $prenom);
+        return $this->render(
+            'person/view.personnes.html.twig',
+            [ "person" => $p]
+        );
+    }
+
+    #[Route('/personne/noms', name: 'app_search_names_person')]
+    public function getNames(PersonneRepository $personneRepository): Response
+    {
+        $p = $personneRepository->getOnlyNames();
+        return $this->render(
+            'person/view.personnes.html.twig',
+            [ "person" => $p]
+        );
+    }
+
+
+    #[Route('/personne/age/{age}', name: 'app_age_person')]
+    public function getPersonGreatThan(string $age, PersonneRepository $personneRepository): Response
+    {
+        $p = $personneRepository->getPersonsGreatThan($age);
+        return $this->render(
+            'person/view.personnes.html.twig',
+            [ "person" => $p]
+        );
+    }
+
+    #[Route('/query/{q}', name: 'app_query_person')]
+    public function query(string $q, ManagerRegistry $managerRegistry): Response
+    {
+
+        $person = $managerRegistry->getRepository(PersonneRepository::class);
+        $person->getOneByNomAndPrenom('','');
+        return $this->render(
+            'person/view.personnes.html.twig',
+            [ "person" => $person]
+        );
+    }
+
 
 }
